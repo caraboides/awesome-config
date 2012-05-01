@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# Lines starting with a '#' are ignored.
+
+# Change your keymap:
+xmodmap "~/.Xmodmap"
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN ''&'' AT THE END.
+#
+# unclutter -idle 2 &
+# wmnd &
+# wmsmixer -w &
+# idesk &
+#load this to have gtk2 apps look ok
+GSDPID=`pidof gnome-settings-daemon`
+if [  "x$GSDPID" == "x" ]; then
+gnome-settings-daemon &
+fi
+
+idesk &
+TILDAPID=`pidof tilda`
+if [  "x$TILDAPID" == "x" ]; then
+    tilda &
+fi
+system-config-printer-applet &
+/usr/lib/gnome-disk-utility/gdu-notification-daemon &
+gnome-power-manager &
+gsettings-data-convert &
+nm-applet --sm-disable &
+/usr/bin/pidgin &
+start-pulseaudio-x11 &
+/usr/bin/gnome-keyring-daemon --start --components=secrets &
+/usr/bin/gnome-keyring-daemon --start --components=ssh &
+/usr/bin/gnome-keyring-daemon --start --components=pkcs11  &
+
+conky -c ~/.config/conky/conkydate &
+conky -c  ~/.config/conky/conkyhr &
+conky -c  ~/.config/conky/conkymin &
+conky -c  ~/.config/conky/conkystats &
+wmname LG3D &
+xscreensaver  -nosplash &
