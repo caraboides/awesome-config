@@ -14,7 +14,7 @@ require("debian.menu")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init("~/.config/awesome/themes/nice-and-clean-theme/theme.lua")
+beautiful.init("/home/christian/.config/awesome/themes/nice-and-clean-theme/theme.lua")
 
 -- load the 'run or raise' function
 require("aweror")
@@ -371,7 +371,7 @@ globalkeys = awful.util.table.join(
     awful.key({                   }, "XF86AudioStop", function () awful.util.spawn("mpc stop") end),
     awful.key({                   }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
     awful.key({                   }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
-    
+    awful.key({ modkey,           }, "p",     function () awful.util.spawn("lxrandr")    end), 
     -- Prompt
     awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
@@ -500,7 +500,7 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.util.spawn("~/.config/awesome/startup")
+awful.util.spawn("/home/christian/.config/awesome/startup")
 
 
 
