@@ -13,21 +13,18 @@ xmodmap "~/.Xmodmap"
 # wmsmixer -w &
 # idesk &
 #load this to have gtk2 apps look ok
-GSDPID=`pidof gnome-settings-daemon`
-if [  "x$GSDPID" == "x" ]; then
-gnome-settings-daemon &
-fi
-
-idesk &
 TILDAPID=`pidof tilda`
 if [  "x$TILDAPID" == "x" ]; then
     tilda &
 fi
-system-config-printer-applet &
-/usr/lib/gnome-disk-utility/gdu-notification-daemon &
+#system-config-printer-applet &
+#/usr/lib/gnome-disk-utility/gdu-notification-daemon &
 gnome-power-manager &
-gsettings-data-convert &
-nm-applet --sm-disable &
+#gsettings-data-convert &
+NMPID=`pidof nm-applet`
+if [  "x$NMPID" == "x" ]; then
+     nm-applet --sm-disable &
+fi
 /usr/bin/pidgin &
 start-pulseaudio-x11 &
 /usr/bin/gnome-keyring-daemon --start --components=secrets &
