@@ -37,3 +37,4 @@ conky -c  ~/.config/conky/conkymin &
 conky -c  ~/.config/conky/conkystats &
 wmname LG3D &
 xscreensaver  -nosplash &
+redshift &

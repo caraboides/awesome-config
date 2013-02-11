@@ -170,8 +170,8 @@ vicious.register(headinfo, vicious.widgets.volume, "$1", 11, "Mic")
 vicious.cache(vicious.widgets.net)
 vicious.register(netdowninfo, vicious.widgets.net, "${wlan0 down_kb}", 3)
 vicious.register(netupinfo, vicious.widgets.net, "${wlan0 up_kb}", 3)
-vicious.register(netdowninfo2, vicious.widgets.net, "${wwan0 down_kb}", 3)
-vicious.register(netupinfo2, vicious.widgets.net, "${wwan0 up_kb}", 3)
+vicious.register(netdowninfo2, vicious.widgets.net, "${eth0 down_kb}", 3)
+vicious.register(netupinfo2, vicious.widgets.net, "${eth0 up_kb}", 3)
 vicious.register(battinfo, vicious.widgets.bat,
   function (widget, args)
     if args[2] < 25 then
