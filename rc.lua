@@ -168,10 +168,10 @@ vicious.cache(vicious.widgets.volume)
 vicious.register(spkrinfo, vicious.widgets.volume, "$1", 11, "Master")
 vicious.register(headinfo, vicious.widgets.volume, "$1", 11, "Mic")
 vicious.cache(vicious.widgets.net)
-vicious.register(netdowninfo, vicious.widgets.net, "${wlan0 down_kb}", 3)
-vicious.register(netupinfo, vicious.widgets.net, "${wlan0 up_kb}", 3)
-vicious.register(netdowninfo2, vicious.widgets.net, "${eth0 down_kb}", 3)
-vicious.register(netupinfo2, vicious.widgets.net, "${eth0 up_kb}", 3)
+vicious.register(netdowninfo, vicious.widgets.net, "${wlan2 down_kb}", 3)
+vicious.register(netupinfo, vicious.widgets.net, "${wlan2 up_kb}", 3)
+vicious.register(netdowninfo2, vicious.widgets.net, "${eth1 down_kb}", 3)
+vicious.register(netupinfo2, vicious.widgets.net, "${eth1 up_kb}", 3)
 vicious.register(battinfo, vicious.widgets.bat,
   function (widget, args)
     if args[2] < 25 then
@@ -319,8 +319,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev       ),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
-    awful.key( { }               ,"XF86Back", awful.tag.viewprev     ),
-    awful.key({  }                 ,"XF86Forward", awful.tag.viewnext   ),
+    awful.key({ modkey, "Control" }, "Prior", awful.tag.viewprev     ),
+    awful.key({ modkey, "Control" }, "Next", awful.tag.viewnext   ),
     awful.key({ modkey, }, "e",  revelation.revelation),
 
     awful.key({ modkey,           }, "j",
@@ -471,6 +471,10 @@ awful.rules.rules = {
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
+    -- Set Pigin to 1 1
+    {rule = { class = "Pidgin" },
+      properties = { tag = tags[1][1] } },
+
 }
 -- }}}
 
