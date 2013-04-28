@@ -188,8 +188,13 @@ myledbox = widget({ type = "textbox", name = "myledbox", align= "right" })
 function run_script()
     local filedescripter = io.popen('/home/christian/.config/awesome/leds.sh')
     local value = filedescripter:read()
+    myledbox.bg = "#FFFFFF"
     filedescripter:close()
-    return value
+    if value == nil then
+        return value
+    else 
+        return "<span color='#111111'><b> " .. value .. " </b></span>"
+    end
 end
 vicious.register(myledbox, run_script, "$1", 1)
 
