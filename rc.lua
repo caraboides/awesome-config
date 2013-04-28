@@ -69,8 +69,6 @@ clockicon = widget ({ type = "textbox" })
 clockicon.bg_image = image(beautiful.widget_clock)
 clockicon.bg_align = "middle"
 clockicon.width = 8
-mpdicon = widget ({ type = "textbox" })
-mpdicon.bg_align = "middle"
 
 seperator = widget({ type = "textbox" })
 seperator.text = " | "
@@ -158,7 +156,6 @@ netupinfo = widget ({ type = "textbox" })
 netdowninfo2 = widget ({ type = "textbox" })
 netupinfo2 = widget ({ type = "textbox" })
 battinfo = widget ({ type = "textbox" })
-mpdinfo = widget ({ type = "textbox" })
 -- ... And register them
 vicious.register(cpuinfo, vicious.widgets.cpu, "$1% / $2%")
 vicious.register(cputemp, vicious.widgets.thermal, "$1 C", 19, "thermal_zone0")
@@ -186,20 +183,16 @@ vicious.register(battinfo, vicious.widgets.bat,
     end
   end, 59, "BAT0")
 
--- MPD widget. Hides icon and text when nothing is playing.
-vicious.register(mpdinfo, vicious.widgets.mpd,
-  function (widget, args)
-    if args["{state}"] == "Stop" then
-      mpdicon.bg_image = nil
-      mpdicon.width = 0 
-      return ""
-    else
-      mpdicon.bg_image = image(beautiful.widget_mpd)
-      mpdicon.width = 8
-      return " " .. args["{Artist}"] .. ' - ' .. args["{Title}"]
-    end
-  end)
-  
+-- LED widget
+myledbox = widget({ type = "textbox", name = "myledbox", align= "right" })
+function run_script()
+    local filedescripter = io.popen('/home/christian/.config/awesome/leds.sh')
+    local value = filedescripter:read()
+    filedescripter:close()
+    return value
+end
+vicious.register(myledbox, run_script, "$1", 1)
+
 
 
 
@@ -285,8 +278,9 @@ for s = 1, screen.count() do
 
     bottombar[s] = awful.wibox({ position = "bottom", screen = s })
     bottombar[s].widgets = {
-        { mpdicon, spacer, mpdinfo,
-          layout = awful.widget.layout.horizontal.leftright
+        { spacer, myledbox,
+          layout = awful.widget.layout.horizontal.leftright,
+          height = 15
         },
         {seperator, cpuicon,  cpuinfo, spacer , cputemp, seperator,
         meminfo , seperator, 
