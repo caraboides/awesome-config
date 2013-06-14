@@ -16,6 +16,8 @@ require("debian.menu")
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/home/christian/.config/awesome/themes/nice-and-clean-theme/theme.lua")
 
+local icon_path = awful.util.getdir("config").."/themes/nice-and-clean-theme/icons/"
+
 -- load the 'run or raise' function
 require("aweror")
 
@@ -157,7 +159,10 @@ netdowninfo2 = widget ({ type = "textbox" })
 netupinfo2 = widget ({ type = "textbox" })
 battinfo = widget ({ type = "textbox" })
 -- ... And register them
-vicious.register(cpuinfo, vicious.widgets.cpu, "$1% / $2%")
+--vicious.register(cpuinfo, vicious.widgets.cpu, "$1% / $2% / $3% / $4% / $5% / $6% / $7% / $8% ")
+vicious.register(cpuinfo, vicious.widgets.cpu, function (widget, args)
+      return string.format("%2.2d %2.2d %2.2d %2.2d %2.2d %2.2d %2.2d %2.2d ", args[1],  args[2] , args[3], args[4], args[5], args[6], args[7], args[8])
+          end)
 vicious.register(cputemp, vicious.widgets.thermal, "$1 C", 19, "thermal_zone0")
 vicious.cache(vicious.widgets.mem)
 vicious.register(meminfo, vicious.widgets.mem, "$1% ($2Mb)", 5)
@@ -198,7 +203,70 @@ function run_script()
 end
 vicious.register(myledbox, run_script, "$1", 1)
 
+--{{{ Pulseaudio
 
+-- {{{ Volume level
+volicon = widget({ type = "imagebox" , align = "middle"})
+volicon.image = image(icon_path .. "spkr_01.png")
+
+volicon.resize = false
+volicon.bg_align = "middle"
+
+-- Initialize widgets
+volbar  = awful.widget.progressbar()
+--volwidget = widget({ type = "textbox" })
+-- Progressbar properties
+volbar:set_vertical(true):set_ticks(false)
+volbar:set_height(22)
+volbar:set_background_color(beautiful.fg_off_widget)
+volbar:set_gradient_colors({ beautiful.fg_widget,
+    beautiful.fg_center_widget, beautiful.fg_end_widget
+}) -- Enable caching
+vicious.cache(vicious.widgets.pulse)
+-- Register widgets
+vicious.register(volbar, vicious.contrib.pulse, "$1", 2)
+vicious.register(volicon, vicious.contrib.pulse, "$1", 2)
+--vicious.register(volwidget, vicious.contrib.pulse, " $1%", 2)
+-- Register buttons
+volbar.widget:buttons(awful.util.table.join(
+    awful.button({ }, 1, function () awful.util.spawn("pavucontrol") end),
+    awful.button({ }, 4, function ()
+        vicious.contrib.pulse.add(5)
+        volbar:set_value(vicious.contrib.pulse.getVolume()/100)
+        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
+        --local v = volbar:get_value()
+        volbar_t:set_text( " " .. v .. "%")
+    end),
+    awful.button({ }, 5, function ()
+        vicious.contrib.pulse.add(-5)
+        volbar:set_value(vicious.contrib.pulse.getVolume()/100)
+        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
+        --local v = volbar:get_value()
+        volbar_t:set_text( " " .. v .. "%")
+    end)
+)) -- Register assigned buttons
+--volwidget:buttons(volbar.widget:buttons())
+volicon:buttons(volbar.widget:buttons())
+---- Mouse over (tooltip)
+volbar_t = awful.tooltip({
+        objects = { volbar.widget, volicon },
+        timer_function = function()
+        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
+        --local v = volbar:get_value()
+        return " " .. v .. "%"
+        end,
+})
+
+local function pulse_volume(delta)
+  vicious.contrib.pulse.add(delta,"alsa_output.pci-0000_00_1b.0.analog-stereo")
+end
+
+local function pulse_toggle()
+  vicious.contrib.pulse.toggle("alsa_output.pci-0000_00_1b.0.analog-stereo")
+end
+
+
+--}}}
 
 
 -- Create a systray
@@ -283,10 +351,9 @@ for s = 1, screen.count() do
 
     bottombar[s] = awful.wibox({ position = "bottom", screen = s })
     bottombar[s].widgets = {
-        { spacer, myledbox,
+        { spacer, myledbox, spacer, volicon, spacer, volbar, 
           layout = awful.widget.layout.horizontal.leftright,
-          height = 15
-        },
+          height= 15, },
         {seperator, cpuicon,  cpuinfo, spacer , cputemp, seperator,
         meminfo , seperator, 
         spkrinfo, spkricon,  seperator, 
@@ -342,10 +409,8 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
+          awful.client.focus.byidx( 1)
+          if client.focus then client.focus:raise() end
         end),
 
     -- Standard program
@@ -362,10 +427,10 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "space", function () awful.layout.inc(layouts, 1) end),
 
     -- Special Keys 
-    awful.key({                   }, "XF86Launch1", function () awful.util.spawn("xscreensaver-command -lock") end),
-    awful.key({                   }, "XF86AudioRaiseVolume", function () awful.util.spawn(" amixer sset Master,0 1+") end),
-    awful.key({                   }, "XF86AudioLowerVolume", function () awful.util.spawn("amixer sset Master,0 1-") end),
-    awful.key({                   }, "XF86AudioMute", function () awful.util.spawn("amixer sset Master,0 toggle") end),
+    awful.key({                   }, "XF86ScreenSaver", function () awful.util.spawn("xscreensaver-command -lock") end),
+    awful.key({                   }, "XF86AudioRaiseVolume", function () pulse_volume(5)  end),
+    awful.key({                   }, "XF86AudioLowerVolume", function () pulse_volume(-5) end),
+    awful.key({                   }, "XF86AudioMute", function () pulse_toggle() end),
     --awful.key({                   }, "XF86AudioPlay", function () awful.util.spawn("mpc toggle") end),
     --awful.key({                   }, "XF86AudioStop", function () awful.util.spawn("mpc stop") end),
     --awful.key({                   }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
@@ -473,6 +538,8 @@ awful.rules.rules = {
     -- Set Pigin to 1 1
     {rule = { class = "Pidgin" },
       properties = { tag = tags[1][1] } },
+    {rule = { class = "Spotify"},
+      properties = { tag = tags[1][9] } }
 
 }
 -- }}}
@@ -508,7 +575,7 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.util.spawn("/home/christian/.config/awesome/startup")
+--awful.util.spawn("/home/christian/.config/awesome/startup")
 
 
 

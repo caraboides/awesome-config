@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Lines starting with a '#' are ignored.
-
+sleep 4
 # Change your keymap:
 xmodmap "~/.Xmodmap"
 
@@ -37,5 +37,5 @@ conky -c  ~/.config/conky/conkymin &
 conky -c  ~/.config/conky/conkystats &
 wmname LG3D &
 xscreensaver  -nosplash &
-redshift &
 syndaemon &
+#spotify &
