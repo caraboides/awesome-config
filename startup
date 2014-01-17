@@ -31,6 +31,8 @@ start-pulseaudio-x11 &
 /usr/bin/gnome-keyring-daemon --start --components=ssh &
 /usr/bin/gnome-keyring-daemon --start --components=pkcs11  &
 
+gnome-settings-daemon &
+
 conky -c ~/.config/conky/conkydate &
 conky -c  ~/.config/conky/conkyhr &
 conky -c  ~/.config/conky/conkymin &

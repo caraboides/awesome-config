@@ -131,7 +131,6 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "Debian", debian.menu.Debian_menu.Debian },
                                     { "open terminal", terminal }
                                   }
                         })
@@ -170,10 +169,10 @@ vicious.cache(vicious.widgets.volume)
 vicious.register(spkrinfo, vicious.widgets.volume, "$1", 11, "Master")
 vicious.register(headinfo, vicious.widgets.volume, "$1", 11, "Mic")
 vicious.cache(vicious.widgets.net)
-vicious.register(netdowninfo, vicious.widgets.net, "${wlan2 down_kb}", 3)
-vicious.register(netupinfo, vicious.widgets.net, "${wlan2 up_kb}", 3)
-vicious.register(netdowninfo2, vicious.widgets.net, "${eth1 down_kb}", 3)
-vicious.register(netupinfo2, vicious.widgets.net, "${eth1 up_kb}", 3)
+vicious.register(netdowninfo, vicious.widgets.net, "${wlan0 down_kb}", 3)
+vicious.register(netupinfo, vicious.widgets.net, "${wlan0 up_kb}", 3)
+vicious.register(netdowninfo2, vicious.widgets.net, "${eth0 down_kb}", 3)
+vicious.register(netupinfo2, vicious.widgets.net, "${eth0 up_kb}", 3)
 vicious.register(battinfo, vicious.widgets.bat,
   function (widget, args)
     if args[2] < 25 then
@@ -575,7 +574,7 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
---awful.util.spawn("/home/christian/.config/awesome/startup")
+awful.util.spawn_with_shell("/home/christian/.config/awesome/startup")
 
 
 
