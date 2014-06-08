@@ -1,14 +1,15 @@
 -- Standard awesome library
-require("awful")
+awful=require("awful")
 require("awful.autofocus")
-require("awful.rules")
+awful.rules=require("awful.rules")
 -- Theme handling library
-require("vicious")
-require("beautiful")
+vicious=require("vicious")
+beautiful=require("beautiful")
 -- Notification library
 require("naughty")
 require("revelation")
-require("cal")
+cal=require("cal")
+wibox=require("wibox")
 -- Load Debian menu entries
 require("debian.menu")
 
@@ -27,54 +28,43 @@ globalkeys = awful.util.table.join(globalkeys, aweror.genkeys(modkey))
 root.keys(globalkeys)
 
 -- Set all the icons needed
-cpuicon = widget ({ type = "textbox" })
-cpuicon.bg_image = image(beautiful.widget_cpu)
+cpuicon = wibox.widget.textbox()
 cpuicon.bg_align = "middle"
 cpuicon.width = 8
-tempicon = widget ({ type = "textbox" })
-tempicon.bg_image = image(beautiful.widget_temp)
+tempicon = wibox.widget.textbox()
 tempicon.bg_align = "middle"
 tempicon.width = 8
-memicon = widget ({ type = "textbox" })
-memicon.bg_image = image(beautiful.widget_mem)
+memicon = wibox.widget.textbox()
 memicon.bg_align = "middle"
 memicon.width = 8
-spkricon = widget ({ type = "textbox" })
-spkricon.bg_image = image(beautiful.widget_spkr)
+spkricon = wibox.widget.textbox()
 spkricon.bg_align = "middle"
 spkricon.width = 8
-headicon = widget ({ type = "textbox" })
-headicon.bg_image = image(beautiful.widget_plus)
+headicon = wibox.widget.textbox()
 headicon.bg_align = "middle"
 headicon.width = 8
-netdownicon = widget ({ type = "textbox" })
-netdownicon.bg_image = image(beautiful.widget_wired)
+netdownicon = wibox.widget.textbox()
 netdownicon.bg_align = "middle"
 netdownicon.width = 8
-netupicon = widget ({ type = "textbox" })
-netupicon.bg_image = image(beautiful.widget_wired)
+netupicon = wibox.widget.textbox()
 netupicon.bg_align = "middle"
 netupicon.width = 8
-mailicon = widget ({ type = "textbox" })
-mailicon.bg_image = image(beautiful.widget_mail)
+mailicon = wibox.widget.textbox()
 mailicon.bg_align = "middle"
 mailicon.width = 8
-pacicon = widget ({ type = "textbox" })
-pacicon.bg_image = image(beautiful.widget_pacman)
+pacicon = wibox.widget.textbox()
 pacicon.bg_align = "middle"
 pacicon.width = 8
-batticon = widget ({ type = "textbox" })
-batticon.bg_image = image(beautiful.widget_batt_full)
+batticon = wibox.widget.textbox()
 batticon.bg_align = "middle"
 batticon.width = 8
-clockicon = widget ({ type = "textbox" })
-clockicon.bg_image = image(beautiful.widget_clock)
+clockicon = wibox.widget.textbox()
 clockicon.bg_align = "middle"
 clockicon.width = 8
 
-seperator = widget({ type = "textbox" })
+seperator = wibox.widget.textbox()
 seperator.text = " | "
-spacer = widget({ type = "textbox" })
+spacer = wibox.widget.textbox()
 spacer.width = 6
 
 
@@ -135,28 +125,28 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
 -- }}}
 
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" })
+mytextclock = awful.widget.textclock()
 cal.register(mytextclock)
 
 -- User scriptes
 -- Create some widgets...
-cpuinfo = widget ({ type = "textbox" })
-cputemp = widget ({ type = "textbox" })
-meminfo = widget ({ type = "textbox" })
-spkrinfo = widget ({ type = "textbox" })
-headinfo = widget ({ type = "textbox" })
-netdowninfo = widget ({ type = "textbox" })
-netupinfo = widget ({ type = "textbox" })
-netdowninfo2 = widget ({ type = "textbox" })
-netupinfo2 = widget ({ type = "textbox" })
-battinfo = widget ({ type = "textbox" })
+cpuinfo =  wibox.widget.textbox()
+cputemp =   wibox.widget.textbox()
+meminfo =  wibox.widget.textbox()
+spkrinfo =  wibox.widget.textbox()
+headinfo =  wibox.widget.textbox()
+netdowninfo =  wibox.widget.textbox()
+netupinfo =  wibox.widget.textbox()
+netdowninfo2 =  wibox.widget.textbox()
+netupinfo2 =  wibox.widget.textbox()
+battinfo =  wibox.widget.textbox()
 -- ... And register them
 --vicious.register(cpuinfo, vicious.widgets.cpu, "$1% / $2% / $3% / $4% / $5% / $6% / $7% / $8% ")
 vicious.register(cpuinfo, vicious.widgets.cpu, function (widget, args)
@@ -188,7 +178,7 @@ vicious.register(battinfo, vicious.widgets.bat,
   end, 59, "BAT0")
 
 -- LED widget
-myledbox = widget({ type = "textbox", name = "myledbox", align= "right" })
+myledbox =  wibox.widget.textbox()
 function run_script()
     local filedescripter = io.popen('/home/christian/.config/awesome/leds.sh')
     local value = filedescripter:read()
@@ -202,74 +192,14 @@ function run_script()
 end
 vicious.register(myledbox, run_script, "$1", 1)
 
---{{{ Pulseaudio
 
--- {{{ Volume level
-volicon = widget({ type = "imagebox" , align = "middle"})
-volicon.image = image(icon_path .. "spkr_01.png")
-
-volicon.resize = false
-volicon.bg_align = "middle"
-
--- Initialize widgets
-volbar  = awful.widget.progressbar()
---volwidget = widget({ type = "textbox" })
--- Progressbar properties
-volbar:set_vertical(true):set_ticks(false)
-volbar:set_height(22)
-volbar:set_background_color(beautiful.fg_off_widget)
-volbar:set_gradient_colors({ beautiful.fg_widget,
-    beautiful.fg_center_widget, beautiful.fg_end_widget
-}) -- Enable caching
-vicious.cache(vicious.widgets.pulse)
--- Register widgets
-vicious.register(volbar, vicious.contrib.pulse, "$1", 2)
-vicious.register(volicon, vicious.contrib.pulse, "$1", 2)
---vicious.register(volwidget, vicious.contrib.pulse, " $1%", 2)
--- Register buttons
-volbar.widget:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () awful.util.spawn("pavucontrol") end),
-    awful.button({ }, 4, function ()
-        vicious.contrib.pulse.add(5)
-        volbar:set_value(vicious.contrib.pulse.getVolume()/100)
-        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
-        --local v = volbar:get_value()
-        volbar_t:set_text( " " .. v .. "%")
-    end),
-    awful.button({ }, 5, function ()
-        vicious.contrib.pulse.add(-5)
-        volbar:set_value(vicious.contrib.pulse.getVolume()/100)
-        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
-        --local v = volbar:get_value()
-        volbar_t:set_text( " " .. v .. "%")
-    end)
-)) -- Register assigned buttons
---volwidget:buttons(volbar.widget:buttons())
-volicon:buttons(volbar.widget:buttons())
----- Mouse over (tooltip)
-volbar_t = awful.tooltip({
-        objects = { volbar.widget, volicon },
-        timer_function = function()
-        local v = math.floor(vicious.contrib.pulse.getVolume() + 0.5)
-        --local v = volbar:get_value()
-        return " " .. v .. "%"
-        end,
-})
-
-local function pulse_volume(delta)
-  vicious.contrib.pulse.add(delta,"alsa_output.pci-0000_00_1b.0.analog-stereo")
-end
-
-local function pulse_toggle()
-  vicious.contrib.pulse.toggle("alsa_output.pci-0000_00_1b.0.analog-stereo")
-end
 
 
 --}}}
 
 
 -- Create a systray
-mysystray = widget({ type = "systray" })
+mysystray = wibox.widget.systray()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -312,7 +242,7 @@ mytasklist.buttons = awful.util.table.join(
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
-    mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
+    mypromptbox[s] = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
@@ -322,37 +252,38 @@ for s = 1, screen.count() do
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
-
+     mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
     -- Create a tasklist widget
-    mytasklist[s] = awful.widget.tasklist(function(c)
-                                              return awful.widget.tasklist.label.currenttags(c, s)
-                                          end, mytasklist.buttons)
+     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
     -- Create a Temp
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
-    -- Add widgets to the wibox - order matters
-    mywibox[s].widgets = {
-        {
-            mylauncher,
-            mytaglist[s],
-            mypromptbox[s],
-            layout = awful.widget.layout.horizontal.leftright
-        },
-        mylayoutbox[s],
-        mytextclock,
-         mysystray ,
-        mytasklist[s],
-        layout = awful.widget.layout.horizontal.rightleft
-    }
+       -- Widgets that are aligned to the left
+       local left_layout = wibox.layout.fixed.horizontal()
+       left_layout:add(mylauncher)
+       left_layout:add(mytaglist[s])
+       left_layout:add(mypromptbox[s])
+       -- Widgets that are aligned to the right
+       local right_layout = wibox.layout.fixed.horizontal()
+       if s == 1 then right_layout:add(wibox.widget.systray()) end
+       right_layout:add(mytextclock)
+       right_layout:add(mylayoutbox[s])
+       -- Now bring it all together (with the tasklist in the middle)
+       local layout = wibox.layout.align.horizontal()
+       layout:set_left(left_layout)
+       layout:set_middle(mytasklist[s])
+       layout:set_right(right_layout)
+       mywibox[s]:set_widget(layout)
+       --
+
 
 
     bottombar[s] = awful.wibox({ position = "bottom", screen = s })
     bottombar[s].widgets = {
         { spacer, myledbox, spacer, volicon, spacer, volbar, 
-          layout = awful.widget.layout.horizontal.leftright,
-          height= 15, },
+         
+          height= 15 },
         {seperator, cpuicon,  cpuinfo, spacer , cputemp, seperator,
         meminfo , seperator, 
         spkrinfo, spkricon,  seperator, 
@@ -363,9 +294,8 @@ for s = 1, screen.count() do
         netupinfo2, netupicon , seperator,
         battinfo, batticon , seperator,
 
-        layout = awful.widget.layout.horizontal.rightleft,
         height = 13},
-        layout = awful.widget.layout.horizontal.leftright, height = 13
+         height = 13
    }
 
 end
@@ -426,7 +356,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Control" }, "space", function () awful.layout.inc(layouts, 1) end),
 
     -- Special Keys 
-    awful.key({                   }, "XF86ScreenSaver", function () awful.util.spawn("xscreensaver-command -lock") end),
+    awful.key({ modkey,           }, "l", function () awful.util.spawn("/home/christian/local/bin/slimlock") end),
     awful.key({                   }, "XF86AudioRaiseVolume", function () pulse_volume(5)  end),
     awful.key({                   }, "XF86AudioLowerVolume", function () pulse_volume(-5) end),
     awful.key({                   }, "XF86AudioMute", function () pulse_toggle() end),
@@ -516,41 +446,28 @@ clientbuttons = awful.util.table.join(
 root.keys(globalkeys)
 -- }}}
 
--- {{{ Rules
-awful.rules.rules = {
-    -- All clients will match this rule.
-    { rule = { },
-      properties = { border_width = beautiful.border_width,
-                     border_color = beautiful.border_normal,
-                     focus = true,
-                     keys = clientkeys,
-                     buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
-      properties = { floating = true } },
-    { rule = { class = "pinentry" },
-      properties = { floating = true } },
-    { rule = { class = "gimp" },
-      properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
-    -- Set Pigin to 1 1
-    {rule = { class = "Pidgin" },
-      properties = { tag = tags[1][1] } },
-    {rule = { class = "Spotify"},
-      properties = { tag = tags[1][9] } }
+   -- {rule = { class = "Pidgin" },
+   --   properties = { tag = tags[1][1] } },
+    --{rule = { class = "Spotify"},
+   --  properties = { tag = tags[1][9] } },
 
+awful.rules.rules = {
+        -- All clients will match this rule.
+         { rule = { },
+             properties = { border_width = beautiful.border_width,
+             border_color = beautiful.border_normal,
+             focus = awful.client.focus.filter,
+             raise = true,
+             keys = clientkeys,
+             buttons = clientbuttons } },
 }
--- }}}
+   
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.add_signal("manage", function (c, startup)
-    -- Add a titlebar
-    -- awful.titlebar.add(c, { modkey = modkey })
-
+client.connect_signal("manage", function (c, startup)
     -- Enable sloppy focus
-    c:add_signal("mouse::enter", function(c)
+    c:connect_signal("mouse::enter", function(c)
         if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
             and awful.client.focus.filter(c) then
             client.focus = c
@@ -568,11 +485,58 @@ client.add_signal("manage", function (c, startup)
             awful.placement.no_offscreen(c)
         end
     end
+
+    local titlebars_enabled = false
+    if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
+        -- buttons for the titlebar
+        local buttons = awful.util.table.join(
+                awful.button({ }, 1, function()
+                    client.focus = c
+                    c:raise()
+                    awful.mouse.client.move(c)
+                end),
+                awful.button({ }, 3, function()
+                    client.focus = c
+                    c:raise()
+                    awful.mouse.client.resize(c)
+                end)
+                )
+
+        -- Widgets that are aligned to the left
+        local left_layout = wibox.layout.fixed.horizontal()
+        left_layout:add(awful.titlebar.widget.iconwidget(c))
+        left_layout:buttons(buttons)
+
+        -- Widgets that are aligned to the right
+        local right_layout = wibox.layout.fixed.horizontal()
+        right_layout:add(awful.titlebar.widget.floatingbutton(c))
+        right_layout:add(awful.titlebar.widget.maximizedbutton(c))
+        right_layout:add(awful.titlebar.widget.stickybutton(c))
+        right_layout:add(awful.titlebar.widget.ontopbutton(c))
+        right_layout:add(awful.titlebar.widget.closebutton(c))
+
+        -- The title goes in the middle
+        local middle_layout = wibox.layout.flex.horizontal()
+        local title = awful.titlebar.widget.titlewidget(c)
+        title:set_align("center")
+        middle_layout:add(title)
+        middle_layout:buttons(buttons)
+
+        -- Now bring it all together
+        local layout = wibox.layout.align.horizontal()
+        layout:set_left(left_layout)
+        layout:set_right(right_layout)
+        layout:set_middle(middle_layout)
+
+        awful.titlebar(c):set_widget(layout)
+    end
 end)
 
-client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+
 
 awful.util.spawn_with_shell("/home/christian/.config/awesome/startup")
 

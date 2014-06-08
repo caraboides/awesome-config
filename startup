@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 # Lines starting with a '#' are ignored.
-sleep 4
 # Change your keymap:
 xmodmap "~/.Xmodmap"
 
@@ -33,11 +32,12 @@ start-pulseaudio-x11 &
 
 gnome-settings-daemon &
 
-conky -c ~/.config/conky/conkydate &
-conky -c  ~/.config/conky/conkyhr &
-conky -c  ~/.config/conky/conkymin &
-conky -c  ~/.config/conky/conkystats &
+#conky -c ~/.config/conky/conkydate &
+#conky -c  ~/.config/conky/conkyhr &
+#conky -c  ~/.config/conky/conkymin &
+#conky -c  ~/.config/conky/conkystats &
 wmname LG3D &
 xscreensaver  -nosplash &
 syndaemon &
+setxkbmap -model pc105 -layout de -variant basic  
 #spotify &
