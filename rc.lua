@@ -275,29 +275,6 @@ for s = 1, screen.count() do
        layout:set_middle(mytasklist[s])
        layout:set_right(right_layout)
        mywibox[s]:set_widget(layout)
-       --
-
-
-
-    bottombar[s] = awful.wibox({ position = "bottom", screen = s })
-    bottombar[s].widgets = {
-        { spacer, myledbox, spacer, volicon, spacer, volbar, 
-         
-          height= 15 },
-        {seperator, cpuicon,  cpuinfo, spacer , cputemp, seperator,
-        meminfo , seperator, 
-        spkrinfo, spkricon,  seperator, 
-        headinfo, headicon,  seperator,
-        netdowninfo, netdownicon,  seperator,
-        netupinfo, netupicon , seperator,
-        netdowninfo2, netdownicon,  seperator,
-        netupinfo2, netupicon , seperator,
-        battinfo, batticon , seperator,
-
-        height = 13},
-         height = 13
-   }
-
 end
 -- }}}
 

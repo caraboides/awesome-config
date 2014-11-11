@@ -18,19 +18,12 @@ if [  "x$TILDAPID" == "x" ]; then
 fi
 #system-config-printer-applet &
 #/usr/lib/gnome-disk-utility/gdu-notification-daemon &
-gnome-power-manager &
 #gsettings-data-convert &
-NMPID=`pidof nm-applet`
-if [  "x$NMPID" == "x" ]; then
-     nm-applet --sm-disable &
-fi
 /usr/bin/pidgin &
-start-pulseaudio-x11 &
-/usr/bin/gnome-keyring-daemon --start --components=secrets &
-/usr/bin/gnome-keyring-daemon --start --components=ssh &
-/usr/bin/gnome-keyring-daemon --start --components=pkcs11  &
-
-gnome-settings-daemon &
+#start-pulseaudio-x11 &
+#/usr/bin/gnome-keyring-daemon --start --components=secrets &
+#/usr/bin/gnome-keyring-daemon --start --components=ssh &
+#/usr/bin/gnome-keyring-daemon --start --components=pkcs11  &
 
 #conky -c ~/.config/conky/conkydate &
 #conky -c  ~/.config/conky/conkyhr &
@@ -38,6 +31,8 @@ gnome-settings-daemon &
 #conky -c  ~/.config/conky/conkystats &
 wmname LG3D &
 xscreensaver  -nosplash &
-syndaemon &
+#syndaemon &
 setxkbmap -model pc105 -layout de -variant basic  
 #spotify &
+wicd-client &
+xsettingsd &
